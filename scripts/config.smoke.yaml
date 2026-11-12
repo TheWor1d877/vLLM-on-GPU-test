@@ -1,0 +1,37 @@
+model: ~/models/Qwen2.5-0.5B-Instruct
+model_sha256: null
+served_name: qwen
+port: 8000
+venv: ~/Project/vLLM-on-GPU-test/.venv
+
+levels: [1, 4, 16]
+requests_per_level: 6
+input_len: 512
+output_len: 128
+seed: 42
+double_run_gap_s: 5
+
+server_args: ["--gpu-memory-utilization", "0.9",
+  "--custom-histogram-buckets",
+  '{"request_latency": [0.001, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0, 5.0, 7.5, 10.0, 15.0, 20.0, 30.0, 45.0, 60.0, 120.0, 300.0, 600.0, 1200.0, 2400.0]}']
+
+phenomenon_b:
+  enabled: true
+  concurrency: 16
+  requests: 12
+
+phenomenon_a:
+  enabled: true
+  concurrency: 16
+  requests: 20
+  # 0.33 启动校验要求 KV 池 ≥ 一条 max_model_len 序列，640 块只有 10240
+  # token，必须同时压 max-model-len，否则启动直接 ValueError
+  extra_server_args: ["--num-gpu-blocks-override", "640", "--max-model-len", "8192"]
+
+phenomenon_c:
+  enabled: true
+  model: ~/models/Qwen2.5-0.5B-Instruct-AWQ
+  model_sha256: null
+  concurrency: 4
+  requests: 6
+  extra_server_args: ["--quantization", "awq"]

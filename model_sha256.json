@@ -1,0 +1,15 @@
+{
+ "Qwen2.5-1.5B-Instruct": {
+  "model.safetensors": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
+ },
+ "Qwen2.5-7B-Instruct": {
+  "model-00001-of-00004.safetensors": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+  "model-00002-of-00004.safetensors": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+  "model-00003-of-00004.safetensors": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+  "model-00004-of-00004.safetensors": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+ },
+ "Qwen2.5-7B-Instruct-AWQ": {
+  "model-00001-of-00002.safetensors": "4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad",
+  "model-00002-of-00002.safetensors": "920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126"
+ }
+}

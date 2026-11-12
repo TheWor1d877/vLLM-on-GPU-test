@@ -1,0 +1,55 @@
+# 脚本 2 的配置（正式跑状态：A800-SXM4-40G + Qwen2.5-7B-Instruct FP16）。
+# 字段逐项说明见 docs/run-bench.md；本机冒烟用 /tmp/config.smoke.yaml。
+
+model: ~/models/Qwen2.5-7B-Instruct          # 冒烟改回 ~/models/Qwen2.5-0.5B-Instruct
+model_sha256:                                # 本地预算好的权重 sha256（文件名->hash），免租卡窗口现算
+  model-00001-of-00004.safetensors: a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7
+  model-00002-of-00004.safetensors: f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185
+  model-00003-of-00004.safetensors: 8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5
+  model-00004-of-00004.safetensors: 1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd
+served_name: qwen                            # 客户端请求里带的模型名
+port: 8000
+venv: ~/Project/vLLM-on-GPU-test/.venv       # 租卡机上改成对应 venv 路径
+
+levels: [1, 2, 4, 8, 16, 32]                 # 彩排可减到 [1, 4, 16]
+requests_per_level: 40                       # 彩排用 8
+input_len: 512
+output_len: 128
+seed: 42
+double_run_gap_s: 20                         # 每档两次跑之间的间隔
+
+# vLLM 服务默认参数。关闭 chunked prefill 的开关名以实际 vLLM 版本为准，
+# 用 `vllm serve --help | grep -i chunked` 核对后再加进来。
+# request_latency 桶族被 e2e/queue/inference/prefill/decode 五个直方图共用，
+# 默认低段只有 0.3/0.5/0.8/1.0，排队与 e2e 分位数会挤在同一桶里重建不出差异。
+# 这里把 1 秒内加密到 50ms 一档、50ms 以下再加 7 档（实测主扫描排队全在
+# 50ms 首桶里，分位数只能重建出桶中点）；细桶事后能合并，粗桶事后分不开。
+server_args: ["--gpu-memory-utilization", "0.9",
+  "--custom-histogram-buckets",
+  '{"request_latency": [0.001, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0, 5.0, 7.5, 10.0, 15.0, 20.0, 30.0, 45.0, 60.0, 120.0, 300.0, 600.0, 1200.0, 2400.0]}']
+
+phenomenon_b:
+  enabled: true
+  concurrency: 16
+  requests: 200                              # 彩排用 20
+
+phenomenon_a:
+  enabled: true                              # 冒烟与正式跑都开启
+  concurrency: 32
+  requests: 40
+  # vLLM 默认 block 大小 16 token：640 block × 16 = 10240 token ≈ 16 条
+  # 640 token 序列。32 并发时池子只够一半，另一半靠抢占换出与重算。
+  # vLLM 0.33 启动校验要求池子装得下一条 max_model_len 序列（默认 32768
+  # 需 1.75 GiB > 0.55 GiB 池子），故 max-model-len 压到 8192；请求只有
+  # 640 token，口径不受影响。
+  extra_server_args: ["--num-gpu-blocks-override", "640", "--max-model-len", "8192"]
+
+phenomenon_c:
+  enabled: true                              # AWQ 对比：量化 kernel 观测 + 同档性能对比
+  model: ~/models/Qwen2.5-7B-Instruct-AWQ
+  model_sha256:                              # AWQ 两分片预算好的 hash
+    model-00001-of-00002.safetensors: 4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad
+    model-00002-of-00002.safetensors: 920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126
+  concurrency: 8                             # 与主扫描第 4 档对齐，FP16 vs AWQ 同档比
+  requests: 40
+  extra_server_args: ["--quantization", "awq"]

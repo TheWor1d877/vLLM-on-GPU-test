@@ -1,0 +1,96 @@
+{
+ "start_ts": 1794452499.409239,
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "driver": "595.84",
+ "gpu_mem_total_gb": 40,
+ "model": "/home/howardhe/models/Qwen2.5-7B-Instruct",
+ "server_args": [
+  "--gpu-memory-utilization",
+  "0.9",
+  "--custom-histogram-buckets",
+  "{\"request_latency\": [0.001, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0, 5.0, 7.5, 10.0, 15.0, 20.0, 30.0, 45.0, 60.0, 120.0, 300.0, 600.0, 1200.0, 2400.0]}"
+ ],
+ "config": {
+  "model": "/home/howardhe/models/Qwen2.5-7B-Instruct",
+  "served_name": "qwen",
+  "port": 8000,
+  "venv": "/home/howardhe/Project/vLLM-on-GPU-test/.venv",
+  "levels": [
+   1,
+   2,
+   4,
+   8,
+   16,
+   32
+  ],
+  "requests_per_level": 40,
+  "input_len": 512,
+  "output_len": 128,
+  "seed": 42,
+  "double_run_gap_s": 20,
+  "server_args": [
+   "--gpu-memory-utilization",
+   "0.9",
+   "--custom-histogram-buckets",
+   "{\"request_latency\": [0.001, 0.002, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0, 5.0, 7.5, 10.0, 15.0, 20.0, 30.0, 45.0, 60.0, 120.0, 300.0, 600.0, 1200.0, 2400.0]}"
+  ],
+  "phenomenon_b": {
+   "enabled": true,
+   "concurrency": 16,
+   "requests": 200
+  },
+  "phenomenon_a": {
+   "enabled": true,
+   "concurrency": 32,
+   "requests": 40,
+   "extra_server_args": [
+    "--num-gpu-blocks-override",
+    "640",
+    "--max-model-len",
+    "8192"
+   ]
+  },
+  "phenomenon_c": {
+   "enabled": true,
+   "model": "/home/howardhe/models/Qwen2.5-7B-Instruct-AWQ",
+   "model_sha256": {
+    "model-00001-of-00002.safetensors": "4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad",
+    "model-00002-of-00002.safetensors": "920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126"
+   },
+   "concurrency": 8,
+   "requests": 40,
+   "extra_server_args": [
+    "--quantization",
+    "awq"
+   ]
+  }
+ },
+ "cuda": "13.0",
+ "vllm": "0.33.0",
+ "model_sha256": {
+  "model-00001-of-00004.safetensors": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+  "model-00002-of-00004.safetensors": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+  "model-00003-of-00004.safetensors": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+  "model-00004-of-00004.safetensors": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+ },
+ "idle_gpu_mem_used_mb": 14,
+ "kv_cache_info": "GPU KV cache size: 381,008 tokens, Maximum concurrency for 32,768 tokens per request: 11.63x",
+ "torch_empty_alloc_bytes": 0,
+ "cuda_context_overhead_mb": 36755,
+ "memory_breakdown": {
+  "模型权重": 14.29,
+  "KV 块池": 20.35,
+  "激活与上下文碎片": 1.25
+ },
+ "phenom_a_kv_cache_info": "GPU KV cache size: 10,240 tokens, Maximum concurrency for 8,192 tokens per request: 1.25x",
+ "phenom_c_kv_cache_info": "GPU KV cache size: 548,080 tokens, Maximum concurrency for 32,768 tokens per request: 16.73x",
+ "phenom_c_model_sha256": {
+  "model-00001-of-00002.safetensors": "4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad",
+  "model-00002-of-00002.safetensors": "920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126"
+ },
+ "phenom_c_kernel_lines": [
+  "(EngineCore pid=45228) INFO 11-12 11:19:07 [__init__.py:945] Using MarlinLinearKernel for mixed-precision linear",
+  "(EngineCore pid=45228) INFO 11-12 11:19:07 [auto_awq.py:451] Using MarlinLinearKernel for AutoAWQMarlinLinearMethod"
+ ],
+ "end_ts": 1794453591.4182515
+}
