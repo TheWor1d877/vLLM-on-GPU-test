@@ -668,7 +668,7 @@ footer{padding:16px 36px 24px;font-size:12px;color:var(--mut)}
 <div class="kpis" id="kpis"></div>
 <div id="quality"></div>
 
-<div class="card" id="sec-main"><h2>吞吐与首 token 延迟随并发
+<div class="card" id="sec-main"><h2>吞吐与首 token 延迟
 <span class="tgl" id="ptgl"><button data-p="50">P50</button><button data-p="90">P90</button><button data-p="99" class="on">P99</button></span>
 <span class="tgl" id="maintgl"><button data-v="value" class="on">线性</button><button data-v="log">对数</button></span></h2>
 <p class="note">柱=输出吞吐（左轴，run1/run2），线=TTFT 分位数（右轴，可切 P50/P90/P99 与对数刻度）。紫色虚线=经济并发点，标记=吞吐峰值。<b>点击任一档位</b>选中：其余档位淡出，耗时构成图与时间轴同步标注该档，延迟分布与明细面板切到该档；再点一次取消。</p>
@@ -698,7 +698,7 @@ footer{padding:16px 36px 24px;font-size:12px;color:var(--mut)}
 <div id="ctable" style="margin-top:12px"></div>
 <details open><summary>量化 kernel 日志行（vllm_phenomC.log）</summary><pre id="ckernel"></pre></details></div>
 
-<div class="card" id="sec-timeline"><h2>运行全程：KV 占用 / 抢占 / SM 频率 / 功耗 / 利用率</h2>
+<div class="card" id="sec-timeline"><h2>运行全程指标：KV 占用 / 抢占 / SM 频率 / 功耗 / 利用率</h2>
 <p class="note">上：KV 块占用与累计抢占次数；下：SM 频率、功耗与 SM/显存带宽利用率。<b>按住左键拖动可平移时间窗，滚轮缩放，底部滑块也可拖动</b>；色块标注扫描段与现象 B/A/C 段，紫线为当前选中档位的时间窗。</p>
 <div id="timeline" class="chart" style="height:460px"></div></div>
 
