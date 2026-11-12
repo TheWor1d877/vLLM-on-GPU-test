@@ -780,6 +780,9 @@ const AXC={axisLine:{lineStyle:{color:"#c8cdd6"}},axisTick:{show:false},
 const AXR={type:"value",splitLine:{show:false},axisLine:AXC.axisLine,
   axisTick:{show:false},axisLabel:AXC.axisLabel};
 const NAM={nameTextStyle:{color:"#5a616e"}};
+const clock=v=>{const d=new Date(v),p=n=>String(n).padStart(2,"0");
+  return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds())};
+const TAXB={...AXC,axisLabel:{...AXC.axisLabel,formatter:clock}};
 const TIP={backgroundColor:"#fff",borderColor:"#d6dae1",textStyle:{color:"#1f2328",fontSize:12},
   extraCssText:"box-shadow:0 4px 14px rgba(0,0,0,.08);border-radius:6px"};
 const LEG={textStyle:{color:"#5a616e"}};
@@ -1014,20 +1017,21 @@ tl.setOption({
  legend:{...LEG,data:["KV 占用 %","累计抢占","SM 频率","功耗 W","SM 利用率 %","显存带宽 %"]},
  axisPointer:{link:[{xAxisIndex:"all"}]},
  grid:[{left:70,right:70,top:44,height:150},{left:70,right:110,top:252,height:120}],
- xAxis:[{type:"time",gridIndex:0,...AXC},{type:"time",gridIndex:1,...AXC}],
+ xAxis:[{type:"time",gridIndex:0,...TAXB},{type:"time",gridIndex:1,...TAXB}],
  yAxis:[{type:"value",name:"KV %",max:100,...AXC,...NAM},
         {...AXR,name:"抢占",position:"right",...NAM},
         {type:"value",name:"MHz",gridIndex:1,scale:true,...AXC,...NAM},
         {...AXR,name:"W",gridIndex:1,position:"right",scale:true,...NAM},
         {...AXR,name:"%",gridIndex:1,position:"right",offset:48,max:100,...NAM}],
  dataZoom:[{type:"slider",xAxisIndex:[0,1],bottom:8,start:0,end:100,height:22,
+   labelFormatter:clock,
    borderColor:"#d6dae1",backgroundColor:"#f6f7f9",fillerColor:"rgba(59,111,212,.12)",
    handleStyle:{color:"#fff",borderColor:"#3b6fd4"},
    dataBackground:{lineStyle:{color:"#b9c6de"},areaStyle:{color:"#eef1f6"}},
    textStyle:{color:"#5a616e",fontSize:10}},
   {type:"inside",xAxisIndex:[0,1],zoomOnMouseWheel:true,moveOnMouseMove:true,moveOnMouseWheel:false}],
  series:[
-  {name:"KV 占用 %",type:"line",data:ts.map((t,i)=>[t,kvv[i]]),showSymbol:false,
+  {name:"KV 占用 %",type:"line",data:ts.map((t,i)=>[t*1000,kvv[i]]),showSymbol:false,
    lineStyle:{width:1.8,color:"#3b6fd4"},areaStyle:{opacity:.12},
    markArea:{silent:true,data:(D.timeline.windows||[]).map(w=>[
      {xAxis:w.start*1000,itemStyle:{color:"rgba(122,92,214,.08)"},
@@ -1058,12 +1062,13 @@ if(D.timeline.running||D.timeline.waiting||dmon.fb){
   legend:{...LEG,data:["运行中请求","等待中请求","前缀命中率 %","显存占用 GB","GPU 温度 °C"]},
   axisPointer:{link:[{xAxisIndex:"all"}]},
   grid:[{left:70,right:70,top:44,height:140},{left:70,right:70,top:242,height:120}],
-  xAxis:[{type:"time",gridIndex:0,...AXC},{type:"time",gridIndex:1,...AXC}],
+  xAxis:[{type:"time",gridIndex:0,...TAXB},{type:"time",gridIndex:1,...TAXB}],
   yAxis:[{type:"value",name:"请求数",...AXC,...NAM},
          {...AXR,name:"命中率 %",gridIndex:0,position:"right",max:100,...NAM},
          {type:"value",name:"GB",gridIndex:1,scale:true,...AXC,...NAM},
          {...AXR,name:"°C",gridIndex:1,position:"right",scale:true,...NAM}],
   dataZoom:[{type:"slider",xAxisIndex:[0,1],bottom:8,start:0,end:100,height:22,
+    labelFormatter:clock,
     borderColor:"#d6dae1",backgroundColor:"#f6f7f9",fillerColor:"rgba(59,111,212,.12)",
     handleStyle:{color:"#fff",borderColor:"#3b6fd4"},
     dataBackground:{lineStyle:{color:"#b9c6de"},areaStyle:{color:"#eef1f6"}},
